@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Deposit</title>
+
+
+    
+    <style type="text/css">
+    	body {
+		    background-color:#F0F0F0;
+		    padding: 2em;
+		    font-family: 'Raleway','Source Sans Pro', 'Arial';
+		}
+		.container {
+		    width: 50%;
+		    margin: 0 auto;
+		}
+		label {
+		    display:block;
+		    margin-bottom:10px;
+		}
+		input {
+		    padding:10px;
+		    width: 50%;
+		    margin-bottom: 1em;
+		}
+		button {
+		    margin: 2em 0;
+		    padding: 1em 4em;
+		    display:block;
+		}
+
+		#instructor {
+		    padding:1em;
+		    background-color:#fff;
+		    margin: 1em 0;
+		}
+    </style>
+</head>
+<body onload="countTime()">
+    
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+    <script >
+      	console.log(web3);
+		if (typeof web3 !== 'undefined') {
+		  web3 = new Web3(web3.currentProvider);
+		}
+		else{
+		  console.log("install metamask");
+		}
+		web3.eth.defaultAccount = web3.eth.accounts[0];
+		var ContractABI = web3.eth.contract([
+		{
+		  "constant": false,
+		  "inputs": [],
+		  "name": "giveBackDeposit",
+		  "outputs": [],
+		  "payable": false,
+		  "stateMutability": "nonpayable",
+		  "type": "function"
+		},
+		{
+		  "constant": false,
+		  "inputs": [
+		    {
+		      "name": "primary_id",
+		      "type": "uint256"
+		    }
+		  ],
+		  "name": "mortgage",
+		  "outputs": [
+		    {
+		      "name": "",
+		      "type": "uint256"
+		    },
+		    {
+		      "name": "",
+		      "type": "bool"
+		    },
+		    {
+		      "name": "",
+		      "type": "address"
+		    },
+		    {
+		      "name": "",
+		      "type": "uint256"
+		    }
+		  ],
+		  "payable": true,
+		  "stateMutability": "payable",
+		  "type": "function"
+		},
+		{
+		  "constant": false,
+		  "inputs": [
+		    {
+		      "name": "primary_id",
+		      "type": "uint256"
+		    }
+		  ],
+		  "name": "set_violation",
+		  "outputs": [
+		    {
+		      "name": "",
+		      "type": "bool"
+		    }
+		  ],
+		  "payable": false,
+		  "stateMutability": "nonpayable",
+		  "type": "function"
+		},
+		{
+		  "inputs": [],
+		  "payable": false,
+		  "stateMutability": "nonpayable",
+		  "type": "constructor"
+		},
+		{
+		  "constant": true,
+		  "inputs": [
+		    {
+		      "name": "id",
+		      "type": "uint256"
+		    }
+		  ],
+		  "name": "account_exist",
+		  "outputs": [
+		    {
+		      "name": "",
+		      "type": "bool"
+		    }
+		  ],
+		  "payable": false,
+		  "stateMutability": "view",
+		  "type": "function"
+		},
+		{
+		  "constant": true,
+		  "inputs": [],
+		  "name": "dateTimeAddr",
+		  "outputs": [
+		    {
+		      "name": "",
+		      "type": "address"
+		    }
+		  ],
+		  "payable": false,
+		  "stateMutability": "view",
+		  "type": "function"
+		},
+		{
+		  "constant": true,
+		  "inputs": [
+		    {
+		      "name": "id",
+		      "type": "uint256"
+		    }
+		  ],
+		  "name": "get_account_info",
+		  "outputs": [
+		    {
+		      "name": "",
+		      "type": "uint256"
+		    },
+		    {
+		      "name": "",
+		      "type": "bool"
+		    },
+		    {
+		      "name": "",
+		      "type": "address"
+		    },
+		    {
+		      "name": "",
+		      "type": "uint256"
+		    }
+		  ],
+		  "payable": false,
+		  "stateMutability": "view",
+		  "type": "function"
+		},
+		{
+		  "constant": true,
+		  "inputs": [],
+		  "name": "get_balance",
+		  "outputs": [
+		    {
+		      "name": "",
+		      "type": "uint256"
+		    }
+		  ],
+		  "payable": false,
+		  "stateMutability": "view",
+		  "type": "function"
+		}
+		]);
+		//var Coursetro = CoursetroContract.at('0x6e30a30175055116c54a1d47ed47630d05498809');
+		var Contract = ContractABI.at('0xf2629e1de85b31305a87a1514653d94cdd41df22');
+		console.log(Contract);
+
+		Contract.get_balance((err,res)=>{
+		  if (!err){
+		    $("#instructor").html("Contract Balance : " + web3.fromWei(res.toNumber(), "ether" ) +' ether');
+		    console.log("result:",web3.fromWei(res.toNumber(), "ether" ));
+		  }else{
+		    console.log(err);
+		  }
+		});
+
+		$(function(){
+		  $("#button").click(function() {
+		  		console.log("in");
+		        Contract.mortgage($("#identity").val(),{ value: web3.toWei(0.02)}, 
+		        	function(err, res){
+		        		if (!err) alert("transaction success");
+		        		else alert("transaction falied");
+		  			});
+		    });
+
+		  $("#query").click(function(){
+		  		console.log("in query");
+		  		Contract.account_exist($("#query_identity").val(),function(err, res){
+		  			if (!err) {
+		  				console.log(res);
+		  				if (res)
+		  					$("#query_result").html("Number " + $("#query_identity").val()+ " has already sent deposit!" );
+		  				else
+		  					$("#query_result").html("Number " + $("#query_identity").val()+ " has no record." );
+
+		  				
+		  			}
+		  			else console.log(err);
+		  		})
+		  })
+		});
+
+    </script>
+
+    <script type="text/javascript">
+    	function countTime() {  
+		    //获取当前时间  
+		    var date = new Date();  
+		    var now = date.getTime();  
+		    //设置截止时间  
+		    var str="2018/8/20 16:00:00";
+		    var endDate = new Date(str); 
+		    var end = endDate.getTime();  
+		    
+		    //时间差  
+		    var leftTime = end-now; 
+		    //定义变量 d,h,m,s保存倒计时的时间  
+		    var d,h,m,s;  
+		    if (leftTime>=0) {  
+		        d = Math.floor(leftTime/1000/60/60/24);  
+		        h = Math.floor(leftTime/1000/60/60%24);  
+		        m = Math.floor(leftTime/1000/60%60);  
+		        s = Math.floor(leftTime/1000%60);                     
+		    }  
+		    //将倒计时赋值到div中  
+		    document.getElementById("ddl").innerHTML = "Deposit Time DDL : " + d+" days " + h+ " hs " + m+" mins " + s+" secs";  
+		    //递归每秒调用countTime方法，显示动态时间效果  
+		    setTimeout(countTime,1000);  
+		}
+    </script>
+
+    <div class="container">
+
+
+
+    	<h2 id="ddl">Deposit Time DDL : </h2>
+
+        <h1>BitRun Hackson Deposit</h1>
+
+        <h2 id="instructor">Contract Balance : </h2>
+
+        <div>
+
+        	<label for="name" class="col-lg-2 control-label">Input Primary Id</label>
+        	<input id="identity" type="text">
+
+        	<button id="button">Send Deposit</button>
+        </div>
+
+        <div>
+        	<h2 id="query_result" >  </h2>
+
+        	<label for="name" class="col-lg-2 control-label">Input The Id You Want To Query</label>
+       		<input id="query_identity" type="text">
+
+        	<button id="query">Query Deposit</button>
+        </div>
+        
+
+    </div>
+    <div>
+
+    </div>
+
+</body>
+</html>
